@@ -1,0 +1,329 @@
+<?php
+
+function kapu_feed_reader_menu() {
+
+  $items['news'] = array(
+    'title' => 'News',
+    'page callback' => 'kapu_feed_reader_page',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+  );
+
+  return $items;
+}
+
+function kapu_feed_cron() {
+  // Delete old articles.
+	/*
+  $query = db_select('node', 'n');
+  $query
+  ->fields('n', array('nid'))
+  ->fields('fu', array('entity_id'))
+  ->condition('n.type', 'article', '=')
+  ->condition('fu.field_url_value', $url, '=');
+
+  $results = $query->execute()->fetchAll();
+
+  if (!empty($results)) {
+  	$node = reset($results);
+  	return $node->nid;
+  }
+
+  node_delete_multiple($nids);
+  */
+}
+ 
+function kapu_feed_reader_get_news($feed_url) {
+     
+    $rss = motor_curl_get_contents($feed_url);
+    $rss = simplexml_load_string($rss);
+    dpm($rss);
+	
+	$news = array();
+	$c = 0;
+	foreach ($rss->channel->item as $item) {
+		array_push($news, $item);
+		$c++;
+	}
+    
+    return $news;
+}
+
+function kapu_feed_reader_get_all_news() {
+  $channels = kapu_feed_reader_get_channels();
+  foreach ($channels as $channel) {
+    $news[$channel] = kapu_feed_reader_get_news($channel);
+  }
+
+  return $news;
+}
+
+function kapu_feed_reader_theme() {
+   return array(
+     'kapu_feed_reader_news' => array(
+       'variables' => array('news' => NULL, 'source' => NULL),
+       'template' => 'kapu_feed_reader_news',
+     ),
+   );
+}
+
+function kapu_feed_reader_get_channels() {
+  
+  return array(
+  	'http://index.hu/24ora/rss',
+  	'https://444.hu/feed',
+  	'http://urbanplayer.hu/feed/',
+  );
+}
+
+
+
+function kapu_feed_reader_page() {
+	
+	
+	$all_news = kapu_feed_reader_get_all_news();
+
+
+ 	foreach ($all_news as $source => $news) {
+ 	  foreach ($news as $article) {
+ 		$output[] = theme('kapu_feed_reader_news', array('article' => $article, 'source' => $source));
+ 		$exists = kapu_feed_reader_article_exists((string)$article->link);
+ 		if (is_null($exists)) {
+ 		  kapu_feed_reader_save_article($article, $source);
+ 	    } else {
+ 	      //kapu_feed_reader_update_article($nid); 	
+ 	    }
+ 	  }
+ 	}
+    
+ 	return implode($output);
+ }
+
+
+function kapu_feed_reader_save_article($article, $source) {
+	$values = array(
+    'type' => 'article',
+    'uid' => 1,
+    'status' => 1,
+    'comment' => 0,
+    'promote' => 0,
+  );
+
+  $entity = entity_create('node', $values);
+  $ewrapper = entity_metadata_wrapper('node', $entity);
+
+  $ewrapper->title->set((string)$article->title);
+  $ewrapper->field_description->set(array('value' => (string)$article->description));
+  $ewrapper->field_image_url->set((string)$article->enclosure['url'][0]);
+  if (!empty((string)$article->pubDate)) {
+    $ewrapper->field_publication_date->set(strtotime((string)$article->pubDate));
+  }
+  $ewrapper->field_url->set((string)$article->link);
+
+  $term = taxonomy_get_term_by_name((string)$article->category, 'tags');
+  if (!empty($term)) {
+    $ewrapper->field_tags->set($term->tid);
+  } else {
+  	if (!empty((string)$article->category)) {
+
+  	}
+  }
+  $ewrapper->field_source->set($source);
+
+  $ewrapper->save();
+}
+
+function kapu_feed_reader_update_article($nid) {
+  
+  $entity = node_load($nid);
+  $ewrapper = entity_metadata_wrapper('node', $entity);
+
+  $ewrapper->title->set((string)$article->title);
+  $ewrapper->field_description->set(array('value' => (string)$article->description, 'format' => 'full_html'));
+  $ewrapper->field_image_url->set((string)$article->enclosure['url'][0]);
+  $ewrapper->field_publication_date->set(strtotime((string)$article->pubDate));
+  $ewrapper->field_url->set((string)$article->link);
+
+  $term = taxonomy_get_term_by_name((string)$article->category, 'tags');
+  if (!empty($term)) {
+    $ewrapper->field_tags->set($term->tid);
+  } else {
+  	if (!empty((string)$article->category)) {
+      $tid = kapu_feed_reader_save_tag((string)$article->category);
+      $ewrapper->field_tags->set($term->tid);
+  	}
+  }
+  $ewrapper->field_source->set($source);
+
+  $ewrapper->save();
+}
+
+function kapu_feed_reader_save_tag($name) {
+  $term = new stdClass();
+  $term->name = $name;
+  $term->vid = $vid;
+  $term->vocabulary_machine_name = 'tag';
+  taxonomy_term_save($term);
+  return $term;
+}
+
+function kapu_feed_reader_article_exists($url) {
+  $query = db_select('node', 'n');
+  $query->leftJoin('field_data_field_url', 'fu', 'fu.entity_id = n.nid');
+  $query
+  ->fields('n', array('nid'))
+  ->fields('fu', array('entity_id'))
+  ->condition('n.type', 'article', '=')
+  ->condition('fu.field_url_value', $url, '=');
+
+  $results = $query->execute()->fetchAll();
+
+  if (!empty($results)) {
+  	$node = reset($results);
+  	return $node->nid;
+  }
+
+  return NULL;
+
+}
+
+function kapu_feed_reader_selected_news($nid1, $nid2) {
+
+	$nids = array($nid1, $nid2);
+	$values = array();
+	$c = 0;
+	$today = time();
+	foreach ($nids as $nid) {
+	  $rating = votingapi_select_results(array('entity_id' => $nids[$c], 'tag' =>'uservote', 'function' => 'count'));
+	  if (!empty($rating)) {
+	    $rating = reset($rating);
+	    $values[$c] = $rating['value'];
+	  } else {
+	    $values[$c] = 0;
+	  }
+
+	  $flag = flag_get_flag('boost');
+	  if ($flag && $flag->is_flagged($nid)) {
+        $values[$c] += 10;
+      }
+
+      $node = node_load($nids[$c]);
+      $node_wrapper = entity_metadata_wrapper('node', $node);
+      $pub_date = $node_wrapper->field_publication_date->value();
+ 	  $days_between = ceil(abs($today - $pub_date) / 86400);
+ 	  $values[$c] -= $values[$c] - $days_between * ($values[$c] * 0.3);
+
+      $c++;
+	}
+
+	if ($values[0] < $values[1]) {
+		return -1;
+	} elseif ($values[0] > $values[1]) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+
+function kapu_feed_reader_source_stamp($source) {
+  $pattern = '/\/\/(.*?)\.(.*?)\//';
+  preg_match_all($pattern, $source, $matches);
+  return '<div class="article-source">' . $matches[1][0] . '</div>';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ function motor_curl_get_contents($url, $post = NULL) {
+
+
+
+  if (isset($_POST['api_url'])) {
+    $ch = curl_init($_POST['api_url']);
+  }
+  else {
+    $ch = curl_init($url);
+  }
+
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+
+  if (isset($_POST['params'])) {
+    $params = str_replace('|', '&', $_POST['params']);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+  }
+
+  $params = '';
+  if (isset($post)) {
+    
+    curl_setopt($ch, CURLOPT_POST, 1);
+      
+    $params = 'api=1';
+    foreach ($post as $key => $value) {       
+      $params .= '&' . $key . '=' . $value;
+    }
+    
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+  }
+
+  $data = curl_exec($ch);
+  $status=curl_getinfo($ch);
+  curl_close($ch);
+
+
+
+  if (isset($_POST['api_url']) && $status['http_code']==200) {
+    print $data;
+    return;
+  }
+  if (isset($_POST['api_url']) && $status['http_code']!==200) {
+    print 'error';
+    //print json_encode($status);
+    return;
+  }
+
+  if($status['http_code'] == 200)
+    {
+          
+
+        return $data;
+    }
+    elseif($status['http_code']==301 || $status['http_code']==302)
+    {
+        if (!$follow_allowed)
+        {
+            if (!empty($status['redirect_url']))
+            {
+                $redirURL=$status['redirect_url'];
+            }
+            else
+            {
+                preg_match('/href\=\"(.*?)\"/si',$data,$m);
+                if (!empty($m[1]))
+                {
+                    $redirURL=$m[1];
+                }
+            }
+            if(!empty($redirURL))
+            {
+                return  call_user_func( __FUNCTION__, $redirURL, $post_paramtrs);
+            }
+        }
+    }
+
+    return;
+
+}

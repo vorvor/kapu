@@ -1,0 +1,8 @@
+name = Kapu feed reader
+description = Get the goddam news!
+core = 7.x
+
+dependencies[] = entity
+
+stylesheets[all][] = kapu_feed_reader.css
+scripts[] = kapu_feed_reader.js

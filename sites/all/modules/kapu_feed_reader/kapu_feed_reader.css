@@ -1,0 +1,33 @@
+.view-news .views-row-1 {
+
+}
+
+.up-score, .down-score {
+  float: left;
+
+}
+
+.views-field-title h2 {
+  margin-top: 0;
+}
+
+.view-news img {
+	max-width: 100%;
+	margin-top:4px;
+}
+
+.view-news .article-source {
+	background: #007EA7;
+	padding: 2px 8px;
+	display: inline-block;
+	color: #fff;
+	font-weight: bold;
+}
+
+#header div.section, #featured div.section, #messages div.section, #main, #triptych, #footer-columns, #footer {
+    width: 90% !important;
+}
+
+.hide-flagged-row {
+	display: none;
+}
