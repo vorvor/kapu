@@ -73,6 +73,7 @@ function kapu_feed_reader_get_channels() {
   	'http://index.hu/24ora/rss',
   	'https://444.hu/feed',
   	'http://urbanplayer.hu/feed/',
+    'https://24.hu/feed/',
   );
 }
 

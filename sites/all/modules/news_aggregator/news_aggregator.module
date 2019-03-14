@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Code for the News aggregator feature.
+ */
+
+include_once 'news_aggregator.features.inc';
