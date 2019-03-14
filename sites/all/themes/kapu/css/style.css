@@ -1,0 +1,19 @@
+.flag-trash .flag-action {
+  background: url(../images-source/right_and_wrong.jpg);
+    width: 35px;
+    height: 35px;
+    display: block;
+    background-position: 44px 44px;
+    background-size: 100px;
+    text-indent: -9999px;
+}
+
+.flag-checked .flag-action {
+  background: url(../images-source/right_and_wrong.jpg);
+    width: 35px;
+    height: 35px;
+    display: block;
+    background-position: 91px 44px;
+    background-size: 100px;
+    text-indent: -9999px;
+}
