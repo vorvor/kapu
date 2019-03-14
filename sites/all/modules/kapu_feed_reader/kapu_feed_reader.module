@@ -68,13 +68,13 @@ function kapu_feed_reader_theme() {
 }
 
 function kapu_feed_reader_get_channels() {
-  
-  return array(
-  	'http://index.hu/24ora/rss',
-  	'https://444.hu/feed',
-  	'http://urbanplayer.hu/feed/',
-    'https://24.hu/feed/',
-  );
+  $context = config_pages_context_get('sources');
+  $config = config_pages_load_entity('sources', $context);
+  foreach ($config->field_rss_url[LANGUAGE_NONE] as $source) {
+    $sources[] = $source['safe_value'];
+  }
+
+  return $sources;
 }
 
 
@@ -96,7 +96,7 @@ function kapu_feed_reader_page() {
  	    }
  	  }
  	}
-    
+ 
  	return implode($output);
  }
 
