@@ -38,7 +38,6 @@ function kapu_feed_reader_get_news($feed_url) {
      
     $rss = motor_curl_get_contents($feed_url);
     $rss = simplexml_load_string($rss);
-    dpm($rss);
 	
 	$news = array();
 	$c = 0;
@@ -198,7 +197,7 @@ function kapu_feed_reader_selected_news($nid1, $nid2) {
 	  $rating = votingapi_select_results(array('entity_id' => $nids[$c], 'tag' =>'uservote', 'function' => 'count'));
 	  if (!empty($rating)) {
 	    $rating = reset($rating);
-	    $values[$c] = $rating['value'];
+	    $values[$c] = 100 + $rating['value'];
 	  } else {
 	    $values[$c] = 0;
 	  }
@@ -211,8 +210,8 @@ function kapu_feed_reader_selected_news($nid1, $nid2) {
       $node = node_load($nids[$c]);
       $node_wrapper = entity_metadata_wrapper('node', $node);
       $pub_date = $node_wrapper->field_publication_date->value();
- 	  $days_between = ceil(abs($today - $pub_date) / 86400);
- 	  $values[$c] -= $values[$c] - $days_between * ($values[$c] * 0.3);
+ 	  $diff = ceil(abs($today - $pub_date) / 60);
+ 	  //$values[$c] -= $diff;
 
       $c++;
 	}

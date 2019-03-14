@@ -21,13 +21,13 @@ Drupal.behaviors.kapuFeedReader = {
   //alert('Object #' + data.contentId + ' (of type ' + data.contentType + ') has been ' + data.flagStatus +' using flag "' + data.flagName + '"');
      });
 
-    var colors = Array('#f4eed7', '#eef4d7', '#d5f6ff', '#ffe6d5');
-    $('.view-news .views-row').each(function() {
-      randomColor = colors[Math.floor(Math.random() * colors.length)];
+    /*
+    var colors = Array('#f4eed7', '#eef4d7', '#d5f6ff', '#ffe6d5', '#fff6d5');
+    $('.view-news .views-row').each(function(i) {
+      randomColor = colors[i%5];
       $(this).css('background-color', randomColor);
     })
-    
-
+    */
   }
 };
 
