@@ -68,10 +68,12 @@ function kapu_feed_reader_theme() {
 }
 
 function kapu_feed_reader_get_channels() {
-  $context = config_pages_context_get('sources');
-  $config = config_pages_load_entity('sources', $context);
-  foreach ($config->field_rss_url[LANGUAGE_NONE] as $source) {
-    $sources[] = $source['safe_value'];
+  $type = 'channel'; 
+  $nodes = node_load_multiple(array(), array('type' => $type)); 
+  foreach($nodes as $node) {
+    foreach ($node->field_rss_sources[LANGUAGE_NONE] as $source) {
+      $sources[] = $source['safe_value'];
+    }
   }
 
   return $sources;
