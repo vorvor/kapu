@@ -1,7 +1,6 @@
 name = News aggregator
 core = 7.x
 package = Features
-dependencies[] = config_pages
 dependencies[] = date
 dependencies[] = features
 dependencies[] = flag
