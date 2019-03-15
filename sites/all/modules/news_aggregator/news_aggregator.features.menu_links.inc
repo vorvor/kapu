@@ -11,31 +11,54 @@
 function news_aggregator_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: main-menu_news-view:news-view.
-  $menu_links['main-menu_news-view:news-view'] = array(
+  // Exported menu link: main-menu_content:admin/content.
+  $menu_links['main-menu_content:admin/content'] = array(
     'menu_name' => 'main-menu',
-    'link_path' => 'news-view',
-    'router_path' => 'news-view',
-    'link_title' => 'News view',
+    'link_path' => 'admin/content',
+    'router_path' => 'admin/content',
+    'link_title' => 'Content',
     'options' => array(
-      'identifier' => 'main-menu_news-view:news-view',
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_content:admin/content',
     ),
-    'module' => 'system',
+    'module' => 'menu',
     'hidden' => 0,
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
     'weight' => 0,
-    'customized' => 0,
+    'customized' => 1,
   );
-  // Exported menu link: main-menu_news:news.
-  $menu_links['main-menu_news:news'] = array(
+  // Exported menu link: main-menu_home:<front>.
+  $menu_links['main-menu_home:<front>'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => '<front>',
+    'router_path' => '',
+    'link_title' => 'Home',
+    'options' => array(
+      'identifier' => 'main-menu_home:<front>',
+    ),
+    'module' => 'menu',
+    'hidden' => 1,
+    'external' => 1,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 0,
+    'customized' => 1,
+  );
+  // Exported menu link: main-menu_import-news:news.
+  $menu_links['main-menu_import-news:news'] = array(
     'menu_name' => 'main-menu',
     'link_path' => 'news',
     'router_path' => 'news',
-    'link_title' => 'News',
+    'link_title' => 'Import news',
     'options' => array(
-      'identifier' => 'main-menu_news:news',
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_import-news:news',
     ),
     'module' => 'system',
     'hidden' => 0,
@@ -43,7 +66,27 @@ function news_aggregator_menu_default_menu_links() {
     'has_children' => 0,
     'expanded' => 0,
     'weight' => 0,
-    'customized' => 0,
+    'customized' => 1,
+  );
+  // Exported menu link: main-menu_news-frontpage:news-view.
+  $menu_links['main-menu_news-frontpage:news-view'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'news-view',
+    'router_path' => 'news-view',
+    'link_title' => 'News frontpage',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_news-frontpage:news-view',
+    ),
+    'module' => 'system',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 0,
+    'customized' => 1,
   );
   // Exported menu link: main-menu_selection:selection.
   $menu_links['main-menu_selection:selection'] = array(
@@ -65,8 +108,10 @@ function news_aggregator_menu_default_menu_links() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('News');
-  t('News view');
+  t('Content');
+  t('Home');
+  t('Import news');
+  t('News frontpage');
   t('Selection');
 
   return $menu_links;
