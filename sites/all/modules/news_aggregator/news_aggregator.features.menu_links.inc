@@ -28,7 +28,7 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => 0,
+    'weight' => -49,
     'customized' => 1,
   );
   // Exported menu link: main-menu_home:<front>.
@@ -45,7 +45,7 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 1,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => 0,
+    'weight' => -48,
     'customized' => 1,
   );
   // Exported menu link: main-menu_import-news:news.
@@ -65,7 +65,27 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => 0,
+    'weight' => -47,
+    'customized' => 1,
+  );
+  // Exported menu link: main-menu_new-channel:node/add/channel.
+  $menu_links['main-menu_new-channel:node/add/channel'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'node/add/channel',
+    'router_path' => 'node/add/channel',
+    'link_title' => 'New channel',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_new-channel:node/add/channel',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -50,
     'customized' => 1,
   );
   // Exported menu link: main-menu_news-frontpage:news-view.
@@ -85,7 +105,7 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => 0,
+    'weight' => -46,
     'customized' => 1,
   );
   // Exported menu link: main-menu_selection:selection.
@@ -102,8 +122,8 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => 0,
-    'customized' => 0,
+    'weight' => -45,
+    'customized' => 1,
   );
 
   // Translatables
@@ -111,6 +131,7 @@ function news_aggregator_menu_default_menu_links() {
   t('Content');
   t('Home');
   t('Import news');
+  t('New channel');
   t('News frontpage');
   t('Selection');
 
