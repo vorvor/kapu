@@ -6,29 +6,6 @@
  */
 
 /**
- * Implements hook_default_config_pages_type().
- */
-function news_aggregator_default_config_pages_type() {
-  $items = array();
-  $items['sources'] = entity_import('config_pages_type', '{
-    "type" : "sources",
-    "label" : "RSS sources",
-    "weight" : "0",
-    "data" : {
-      "menu" : { "path" : "admin\\/config\\/sources", "type" : "6" },
-      "context" : { "group" : {
-          "config_pages:language" : 0,
-          "config_pages:host" : 0,
-          "config_pages:domain" : 0
-        }
-      }
-    },
-    "rdf_mapping" : []
-  }');
-  return $items;
-}
-
-/**
  * Implements hook_views_api().
  */
 function news_aggregator_views_api($module = NULL, $api = NULL) {
@@ -147,4 +124,38 @@ function news_aggregator_flag_default_flags() {
   );
   return $flags;
 
+}
+
+/**
+ * Implements hook_node_info().
+ */
+function news_aggregator_node_info() {
+  $items = array(
+    'article' => array(
+      'name' => t('Article'),
+      'base' => 'node_content',
+      'description' => t('Use <em>articles</em> for time-sensitive content like news, press releases or blog posts.'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+    'channel' => array(
+      'name' => t('Channel'),
+      'base' => 'node_content',
+      'description' => '',
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+    'page' => array(
+      'name' => t('Basic page'),
+      'base' => 'node_content',
+      'description' => t('Use <em>basic pages</em> for your static content, such as an \'About us\' page.'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+  );
+  drupal_alter('node_info', $items);
+  return $items;
 }
