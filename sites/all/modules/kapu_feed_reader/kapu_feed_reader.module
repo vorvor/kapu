@@ -230,7 +230,12 @@ function kapu_feed_reader_selected_news($nid1, $nid2) {
 function kapu_feed_reader_source_stamp($source) {
   $pattern = '/\/\/(.*?)\.(.*?)\//';
   preg_match_all($pattern, $source, $matches);
-  return '<div class="article-source">' . $matches[1][0] . '</div>';
+
+  if (!empty($matches[1])) {
+    return '<div class="article-source">' . $matches[1][0] . '</div>';
+  }
+
+  return '<div class="article-source"></div>';
 }
 
 
