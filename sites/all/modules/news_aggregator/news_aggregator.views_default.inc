@@ -336,16 +336,41 @@ function news_aggregator_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
+    'field_parent_channel' => 'field_parent_channel',
+    'field_url' => 'field_url',
+    'field_publication_date' => 'field_publication_date',
     'title' => 'title',
     'field_description' => 'field_description',
     'field_image_url' => 'field_image_url',
     'delete_node' => 'delete_node',
-    'value' => 'value',
+    'ops' => 'ops',
+    'ops_1' => 'ops_1',
   );
-  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['default'] = 'field_publication_date';
   $handler->display->display_options['style_options']['info'] = array(
-    'title' => array(
+    'field_parent_channel' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_url' => array(
       'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_publication_date' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'title' => array(
+      'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
@@ -370,9 +395,12 @@ function news_aggregator_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
-    'value' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
+    'ops' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'ops_1' => array(
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
@@ -392,6 +420,11 @@ function news_aggregator_views_default_views() {
   $handler->display->display_options['relationships']['flag_content_rel_1']['label'] = 'checked';
   $handler->display->display_options['relationships']['flag_content_rel_1']['required'] = 0;
   $handler->display->display_options['relationships']['flag_content_rel_1']['flag'] = 'checked';
+  /* Field: Content: Parent channel */
+  $handler->display->display_options['fields']['field_parent_channel']['id'] = 'field_parent_channel';
+  $handler->display->display_options['fields']['field_parent_channel']['table'] = 'field_data_field_parent_channel';
+  $handler->display->display_options['fields']['field_parent_channel']['field'] = 'field_parent_channel';
+  $handler->display->display_options['fields']['field_parent_channel']['type'] = 'node_reference_plain';
   /* Field: Content: URL */
   $handler->display->display_options['fields']['field_url']['id'] = 'field_url';
   $handler->display->display_options['fields']['field_url']['table'] = 'field_data_field_url';
