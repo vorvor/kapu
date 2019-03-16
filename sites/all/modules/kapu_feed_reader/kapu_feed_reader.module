@@ -4,8 +4,9 @@ function kapu_feed_reader_menu() {
 
   $items['news'] = array(
     'title' => 'News',
-    'page callback' => 'kapu_feed_reader_page',
-    'access callback' => TRUE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('kapu_feed_reader_import_news_form'),
+    'access arguments' => array('administer content'),
     'type' => MENU_NORMAL_ITEM,
     'menu_name' => 'main-menu',
   );
@@ -33,11 +34,42 @@ function kapu_feed_cron() {
   node_delete_multiple($nids);
   */
 }
+
+function kapu_feed_reader_block_info() {
+  $blocks = array();
+  $blocks['channel_menu'] = array(
+    'info' => t('Channel menu'),
+  );
+  
+  return $blocks;
+}
+
+function kapu_feed_reader_block_view($delta='') {
+  $block = array();
+  
+  switch($delta) {
+    case 'channel_menu' :
+      $block['content'] = kapu_feed_reader_menu_block_content();
+      break;
+  }
+  
+  return $block;
+}
+
+function kapu_feed_reader_menu_block_content() {
+  $channels = kapu_feed_reader_get_channels();
+
+  foreach ($channels as $channel_id => $channel) {
+    $menu[] = l($channel, 'news-view/' . $channel_id);
+  }
+
+  return implode(' | ', $menu);
+}
  
 function kapu_feed_reader_get_news($feed_url) {
-     
-    $rss = motor_curl_get_contents($feed_url);
-    $rss = simplexml_load_string($rss);
+
+  $rss = motor_curl_get_contents($feed_url);
+  $rss = simplexml_load_string($rss);
 	
 	$news = array();
 	$c = 0;
@@ -45,12 +77,12 @@ function kapu_feed_reader_get_news($feed_url) {
 		array_push($news, $item);
 		$c++;
 	}
-    
-    return $news;
+
+  return $news;
 }
 
 function kapu_feed_reader_get_all_news() {
-  $channels = kapu_feed_reader_get_channels();
+  $channels = kapu_feed_reader_get_rss_channels();
   foreach ($channels as $channel) {
     $news[$channel] = kapu_feed_reader_get_news($channel);
   }
@@ -69,41 +101,83 @@ function kapu_feed_reader_theme() {
 
 function kapu_feed_reader_get_channels() {
   $type = 'channel'; 
-  $nodes = node_load_multiple(array(), array('type' => $type)); 
+  $nodes = node_load_multiple(array(), array('type' => $type));
+  $sources = [];
+  foreach($nodes as $node) {
+    $channels[$node->nid] = $node->title;
+  }
+
+  return $channels;
+}
+
+function kapu_feed_reader_get_rss_channels() {
+  $type = 'channel'; 
+  $nodes = node_load_multiple(array(), array('type' => $type));
+  $sources = [];
   foreach($nodes as $node) {
     foreach ($node->field_rss_sources[LANGUAGE_NONE] as $source) {
-      $sources[] = $source['safe_value'];
+      $sources[$source['safe_value']] = $source['safe_value'];
     }
   }
 
   return $sources;
 }
 
+function kapu_feed_reader_import_news_form($form, &$form_state) {
+  $channels = kapu_feed_reader_get_channels();
 
+  $form['channel'] = array(
+    '#type' => 'select', 
+    '#title' => t('Channel'),
+    '#options' => $channels, 
+  );
 
-function kapu_feed_reader_page() {
-	
-	
-	$all_news = kapu_feed_reader_get_all_news();
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Import news'),
+  );
 
+  
+  if (isset($form_state['storage'])) {
+    $form['output'] = array(
+      '#markup' => $form_state['storage']['imported_count'] . ' article imported<hr />' . $form_state['storage']['sources'] . '<hr />' .  $form_state['storage']['imported'],
+      '#prefix' => '<div class="output">',
+      '#suffix' => '</div>',
+    );
+  }
+  
+  return $form;
+}
 
- 	foreach ($all_news as $source => $news) {
- 	  foreach ($news as $article) {
- 		$output[] = theme('kapu_feed_reader_news', array('article' => $article, 'source' => $source));
- 		$exists = kapu_feed_reader_article_exists((string)$article->link);
- 		if (is_null($exists)) {
- 		  kapu_feed_reader_save_article($article, $source);
- 	    } else {
- 	      //kapu_feed_reader_update_article($nid); 	
- 	    }
- 	  }
+function kapu_feed_reader_import_news_form_submit($form, &$form_state) {
+
+	$node = node_load($form_state['values']['channel']);
+
+  $c = 0;
+  $output = [];
+ 	foreach ($node->field_rss_sources[LANGUAGE_NONE] as $source) {
+    $sources[] = $source['safe_value'];
+    $news = kapu_feed_reader_get_news($source['safe_value']);
+    foreach ($news as $article) {
+   		$exists = kapu_feed_reader_article_exists((string)$article->link);
+   		if (is_null($exists)) {
+        $c++;
+   		  kapu_feed_reader_save_article($article, $source['safe_value'], $node->nid);
+        $output[] = theme('kapu_feed_reader_news', array('article' => $article, 'source' => $source['safe_value']));
+   	  } else {
+   	      //kapu_feed_reader_update_article($nid); 	
+   	  }
+    }
  	}
- 
- 	return implode($output);
+
+ 	$form_state['storage']['sources'] = implode('<br />', $sources);
+  $form_state['storage']['imported'] = implode($output);
+  $form_state['storage']['imported_count'] = $c;
+  $form_state['rebuild'] = TRUE;
  }
 
 
-function kapu_feed_reader_save_article($article, $source) {
+function kapu_feed_reader_save_article($article, $source, $channel_id) {
 	$values = array(
     'type' => 'article',
     'uid' => 1,
@@ -116,6 +190,7 @@ function kapu_feed_reader_save_article($article, $source) {
   $ewrapper = entity_metadata_wrapper('node', $entity);
 
   $ewrapper->title->set((string)$article->title);
+  $ewrapper->field_channel_id->set($channel_id);
   $ewrapper->field_description->set(array('value' => (string)$article->description));
   $ewrapper->field_image_url->set((string)$article->enclosure['url'][0]);
   if (!empty((string)$article->pubDate)) {

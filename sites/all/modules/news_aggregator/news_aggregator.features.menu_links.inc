@@ -28,7 +28,7 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -49,
+    'weight' => -48,
     'customized' => 1,
   );
   // Exported menu link: main-menu_home:<front>.
@@ -45,7 +45,7 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 1,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -48,
+    'weight' => -47,
     'customized' => 1,
   );
   // Exported menu link: main-menu_import-news:news.
@@ -65,7 +65,24 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -47,
+    'weight' => -46,
+    'customized' => 1,
+  );
+  // Exported menu link: main-menu_manage-channels:channels-admin.
+  $menu_links['main-menu_manage-channels:channels-admin'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'channels-admin',
+    'router_path' => 'channels-admin',
+    'link_title' => 'Manage channels',
+    'options' => array(
+      'identifier' => 'main-menu_manage-channels:channels-admin',
+    ),
+    'module' => 'system',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -49,
     'customized' => 1,
   );
   // Exported menu link: main-menu_new-channel:node/add/channel.
@@ -105,7 +122,7 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -46,
+    'weight' => -45,
     'customized' => 1,
   );
   // Exported menu link: main-menu_selection:selection.
@@ -122,7 +139,7 @@ function news_aggregator_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -45,
+    'weight' => -44,
     'customized' => 1,
   );
 
@@ -131,6 +148,7 @@ function news_aggregator_menu_default_menu_links() {
   t('Content');
   t('Home');
   t('Import news');
+  t('Manage channels');
   t('New channel');
   t('News frontpage');
   t('Selection');
