@@ -265,7 +265,7 @@ function news_aggregator_views_default_views() {
   $handler->display->display_options['sorts']['php']['order'] = 'DESC';
   $handler->display->display_options['sorts']['php']['use_php_setup'] = 0;
   $handler->display->display_options['sorts']['php']['php_sort'] = 'return kapu_feed_reader_selected_news($row1->nid, $row2->nid);';
-  /* Contextual filter: Content: Channel id (field_channel_id) */
+  /* Contextual filter: Broken/missing handler */
   $handler->display->display_options['arguments']['field_channel_id_value']['id'] = 'field_channel_id_value';
   $handler->display->display_options['arguments']['field_channel_id_value']['table'] = 'field_data_field_channel_id';
   $handler->display->display_options['arguments']['field_channel_id_value']['field'] = 'field_channel_id_value';
@@ -471,6 +471,20 @@ function news_aggregator_views_default_views() {
   $handler->display->display_options['filters']['flagged']['field'] = 'flagged';
   $handler->display->display_options['filters']['flagged']['relationship'] = 'flag_content_rel_1';
   $handler->display->display_options['filters']['flagged']['value'] = '0';
+  /* Filter criterion: Content: Parent channel (field_parent_channel) */
+  $handler->display->display_options['filters']['field_parent_channel_nid']['id'] = 'field_parent_channel_nid';
+  $handler->display->display_options['filters']['field_parent_channel_nid']['table'] = 'field_data_field_parent_channel';
+  $handler->display->display_options['filters']['field_parent_channel_nid']['field'] = 'field_parent_channel_nid';
+  $handler->display->display_options['filters']['field_parent_channel_nid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_parent_channel_nid']['expose']['operator_id'] = 'field_parent_channel_nid_op';
+  $handler->display->display_options['filters']['field_parent_channel_nid']['expose']['label'] = 'Parent channel';
+  $handler->display->display_options['filters']['field_parent_channel_nid']['expose']['operator'] = 'field_parent_channel_nid_op';
+  $handler->display->display_options['filters']['field_parent_channel_nid']['expose']['identifier'] = 'field_parent_channel_nid';
+  $handler->display->display_options['filters']['field_parent_channel_nid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');

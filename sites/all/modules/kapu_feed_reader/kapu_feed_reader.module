@@ -190,7 +190,7 @@ function kapu_feed_reader_save_article($article, $source, $channel_id) {
   $ewrapper = entity_metadata_wrapper('node', $entity);
 
   $ewrapper->title->set((string)$article->title);
-  $ewrapper->field_channel_id->set($channel_id);
+  $ewrapper->field_parent_channel->set($channel_id);
   $ewrapper->field_description->set(array('value' => (string)$article->description));
   $ewrapper->field_image_url->set((string)$article->enclosure['url'][0]);
   if (!empty((string)$article->pubDate)) {
