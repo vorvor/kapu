@@ -9,6 +9,7 @@ dependencies[] = masonry_views
 dependencies[] = menu
 dependencies[] = node_reference
 dependencies[] = number
+dependencies[] = options
 dependencies[] = taxonomy
 dependencies[] = text
 dependencies[] = views

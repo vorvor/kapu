@@ -265,16 +265,16 @@ function news_aggregator_views_default_views() {
   $handler->display->display_options['sorts']['php']['order'] = 'DESC';
   $handler->display->display_options['sorts']['php']['use_php_setup'] = 0;
   $handler->display->display_options['sorts']['php']['php_sort'] = 'return kapu_feed_reader_selected_news($row1->nid, $row2->nid);';
-  /* Contextual filter: Broken/missing handler */
-  $handler->display->display_options['arguments']['field_channel_id_value']['id'] = 'field_channel_id_value';
-  $handler->display->display_options['arguments']['field_channel_id_value']['table'] = 'field_data_field_channel_id';
-  $handler->display->display_options['arguments']['field_channel_id_value']['field'] = 'field_channel_id_value';
-  $handler->display->display_options['arguments']['field_channel_id_value']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['field_channel_id_value']['default_argument_type'] = 'raw';
-  $handler->display->display_options['arguments']['field_channel_id_value']['default_argument_options']['index'] = '1';
-  $handler->display->display_options['arguments']['field_channel_id_value']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['field_channel_id_value']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['field_channel_id_value']['summary_options']['items_per_page'] = '25';
+  /* Contextual filter: Content: Parent channel (field_parent_channel) */
+  $handler->display->display_options['arguments']['field_parent_channel_nid']['id'] = 'field_parent_channel_nid';
+  $handler->display->display_options['arguments']['field_parent_channel_nid']['table'] = 'field_data_field_parent_channel';
+  $handler->display->display_options['arguments']['field_parent_channel_nid']['field'] = 'field_parent_channel_nid';
+  $handler->display->display_options['arguments']['field_parent_channel_nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['field_parent_channel_nid']['default_argument_type'] = 'raw';
+  $handler->display->display_options['arguments']['field_parent_channel_nid']['default_argument_options']['index'] = '1';
+  $handler->display->display_options['arguments']['field_parent_channel_nid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_parent_channel_nid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_parent_channel_nid']['summary_options']['items_per_page'] = '25';
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
